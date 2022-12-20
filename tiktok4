@@ -1,0 +1,165 @@
+#include <iostream>
+#include <random>
+#include <time.h>
+#include <cmath>
+#include <iomanip>
+using namespace std;
+
+
+
+int main()
+{
+    double arr[10][10] = { 0 };
+    double Pa[10] = { 0 };
+    double Pb[10] = { 0 };
+
+    srand(time(NULL));
+    double summ;
+    double t;
+    int max = 100;
+    double acc, pb;
+    int limit = 0, c;
+    int k = 0;
+    double Ha = 0, Hb = 0, Hab = 0, Hba = 0;
+
+
+
+    for (int d = 0; d < 10; d++)
+    {
+        do
+        {
+            summ = 0;
+            for (int i = 0; i < 10; i++)
+            {
+
+                acc = rand() % (13 - limit);
+                limit += acc;
+                arr[i][d] = (double)acc / 10;
+                summ += arr[i][d];
+            }
+            limit = 0;
+        } while (summ != 1);
+        limit = 0;
+    }
+
+    for (int j = 0; j < 10; j++)// Pa
+    {
+
+        Pa[j] = 0.1 * pow(0.9, (k-1));
+
+        k++;
+    }
+
+
+    for (int i = 0; i < 10; i++)// Pb
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            Pb[i] += Pa[j] * arr[j][i];
+        }
+    }
+
+
+    for (int i = 0; i < 10; i++)// Ha
+    {
+
+        Ha += -(Pa[i] * log2(Pa[i]));
+
+    }
+
+    for (int i = 0; i < 10; i++) // Hb
+    {
+
+        Hb += -(Pb[i] * log2(Pb[i]));
+
+    }
+
+
+    for (int i = 0; i < 10; i++) // H (A/B)
+    {
+        summ = 0;
+        for (int b = 0; b < 10; b++)
+        {
+            if (arr[b][i] != 0)
+                summ += arr[b][i] * log2(arr[b][i]);
+        }
+        Hab += Pa[i] * summ;
+    }
+    Hab = -Hab;
+
+
+    for (int i = 0; i < 10; i++)// H (B/A)
+    {
+        summ = 0;
+        for (int b = 0; b < 10; b++)
+        {
+            if (arr[b][i] != 0)
+                summ += arr[b][i] * log2(arr[b][i]);
+        }
+        Hba += Pb[i] * summ;
+    }
+    Hba = -Hba;
+
+    double arrsumgor[10] = { 0 };
+    double arrsumver[10] = { 0 };
+
+    for (int i = 0; i < 10; i++)
+    {
+        for (int d = 0; d < 10; d++)
+        {
+            arrsumgor[i] += arr[i][d];
+            arrsumver[i] += arr[d][i];
+        }
+    }
+
+
+    cout << "Conditional probability matrix" << endl;
+
+    int num = 0;
+    int num2 = 0;
+    cout << "\t";
+    for (int i = 0; i < 10; i++)
+    {
+        num2++;
+        cout << "#  " << num2 << "\t";
+    }
+
+    cout << endl << endl;
+
+    for (int i = 0; i < 10; i++)
+    {
+        num++;
+        cout << "# " << num << '\t';
+        for (int d = 0; d < 10; d++)
+        {
+            cout << arr[i][d] << "\t";
+
+        }
+        cout << endl;
+        cout << endl;
+    }
+
+  
+    cout << endl << "Geometric distribution P(A): " << endl;
+    int counter = 0;
+    for (int j = 0; j < 10; j++)
+    {
+        counter++;
+        cout << "# " << counter << " " << Pa[j] << endl;
+    }
+    cout << endl << "Geometric distribution P(B): " << endl;
+    counter = 0;
+    for (int j = 0; j < 10; j++)
+    {
+        counter++;
+        cout << "# " << counter << " " << Pb[j] << endl;
+    }
+
+
+
+    cout << endl << "H(A) = " << Ha << endl << "H(B) = " << Hb << endl << "I(A, B) = " << Ha + Hb << endl;
+    cout << "H(A/B) = " << Hab << endl << "H(B/A) = " << Hba << endl;
+    cout << "Cmax(A) = " << Ha - Hab << endl << "Cmax(B) = " << Hb - Hab << endl;
+
+    return 0;
+}
